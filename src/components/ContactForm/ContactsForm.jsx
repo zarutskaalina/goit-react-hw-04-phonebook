@@ -1,24 +1,30 @@
-import { Component } from 'react';
 import style from './ContactsForm.module.css';
+import { useState } from 'react';
 
-export class ContactsForm extends Component {
-  state = {
-    name: '',
-    number: '',
-  };
+export const ContactsForm = ({ handleAddName }) => {
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
 
-  handleInputChange = e => {
+  const handleInputChange = e => {
     const value = e.target.value;
     const name = e.target.name;
-    const number = e.target.number;
+    // const number = e.target.number;
 
-    this.setState({
-      [name]: value,
-      [number]: value,
-    });
+    switch (name) {
+      case 'name': {
+        setName(value);
+        return;
+      }
+      case 'number': {
+        setNumber(value);
+        return;
+      }
+      default:
+        return;
+    }
   };
 
-  handleSubmit = e => {
+  const handleSubmit = e => {
     e.preventDefault();
 
     const contactsData = {
@@ -26,39 +32,36 @@ export class ContactsForm extends Component {
       number: e.currentTarget.elements.number.value,
     };
 
-    this.props.handleAddName(contactsData);
-    this.setState({
-      name: '',
-      number: '',
-    });
+    handleAddName(contactsData);
+
+    setName('');
+    setNumber('');
   };
 
-  render() {
-    return (
-      <form onSubmit={this.handleSubmit} className={style.form}>
-        <label>
-          <p className={style.labelText}>Name</p>
-          <input
-            type="text"
-            name="name"
-            value={this.state.name}
-            onChange={this.handleInputChange}
-            required
-          />
-        </label>
-        <label>
-          <p className={style.labelText}>Number</p>
-          <input
-            type="tel"
-            name="number"
-            value={this.state.number}
-            onChange={this.handleInputChange}
-            pattern="^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$"
-            required
-          />
-        </label>
-        <button type="submit">Add contact</button>
-      </form>
-    );
-  }
-}
+  return (
+    <form onSubmit={handleSubmit} className={style.form}>
+      <label>
+        <p className={style.labelText}>Name</p>
+        <input
+          type="text"
+          name="name"
+          value={name}
+          onChange={handleInputChange}
+          required
+        />
+      </label>
+      <label>
+        <p className={style.labelText}>Number</p>
+        <input
+          type="tel"
+          name="number"
+          value={number}
+          onChange={handleInputChange}
+          pattern="^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$"
+          required
+        />
+      </label>
+      <button type="submit">Add contact</button>
+    </form>
+  );
+};
